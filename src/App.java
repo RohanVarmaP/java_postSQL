@@ -1,6 +1,17 @@
 import java.sql.*;
 
 public class App {
+    public static void viewAll(Statement st){
+        try{
+            ResultSet rs = st.executeQuery("SELECT * FROM public.\"studentsList\" ORDER BY roll_no ASC ;");
+            while(rs.next()){
+                System.err.println("Roll.no: "+rs.getInt(1)+", Name: "+rs.getString(2)+".");
+            }
+        }catch(SQLException e){
+            System.out.println("Connection Failed:"+e.getMessage());
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         String url="jdbc:postgresql://localhost:5432/mydb_backend";
         String uName="postgres";
@@ -9,10 +20,7 @@ public class App {
             Class.forName("org.postgresql.Driver");
             Connection con=DriverManager.getConnection(url,uName,pWord);
             Statement st= con.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM public.\"studentsList\" ORDER BY roll_no ASC ;");
-            while(rs.next()){
-                System.err.println("Roll.no: "+rs.getInt(1)+", Name: "+rs.getString(2)+".");
-            }
+            viewAll(st);
             st.close();
             con.close();
         }catch(SQLException e){
