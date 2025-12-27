@@ -5,7 +5,7 @@ import java.sql.SQLException;
 public class App {
     public static void main(String[] args) throws Exception {
         String url="jdbc:postgresql://localhost:5432/mydb_backend";
-        String uName="postgresql";
+        String uName="postgres";
         String pWord="Rohan@2003";
         try{
             Class.forName("org.postgresql.Driver");
