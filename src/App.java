@@ -2,23 +2,27 @@ import java.sql.*;
 
 public class App {
 
-    public static void viewAll(Statement st){
-        try{
-            ResultSet rs = st.executeQuery("SELECT * FROM public.\"studentsList\" ORDER BY roll_no ASC ;");
+    public static void viewAll(Connection con){
+        String query="SELECT * FROM public.\"studentsList\" ORDER BY roll_no ASC ;";
+        try(Statement st= con.createStatement();
+            ResultSet rs = st.executeQuery(query);){
             while(rs.next()){
                 System.err.println("Roll.no: "+rs.getInt(1)+", Name: "+rs.getString(2)+".");
             }
         }catch(SQLException e){
-            System.out.println("Connection Failed:"+e.getMessage());
+            System.out.println("Failed to Fetch: "+e.getMessage());
         }
     }
 
-    public static void addRow(Statement st,int rollno, String name){
-        try{
-            int rs = st.executeUpdate("INSERT INTO \"studentsList\" Values ("+rollno+",'"+name+"');");
+    public static void addRow(Connection con,int rollno, String name){
+        String query="INSERT INTO \"studentsList\" Values (?,?);";
+        try(PreparedStatement ps= con.prepareStatement(query);){
+            ps.setInt(1, rollno);
+            ps.setString(2, name);
+            int rs = ps.executeUpdate();
             System.err.println(rs+" rows effected");
         }catch(SQLException e){
-            System.out.println("Connection Failed:"+e.getMessage());
+            System.out.println("Failed to Add Row: "+e.getMessage());
         }
     }
 
@@ -29,10 +33,8 @@ public class App {
         try{
             Class.forName("org.postgresql.Driver");
             Connection con=DriverManager.getConnection(url,uName,pWord);
-            Statement st= con.createStatement();
-            viewAll(st);
-            addRow(st, 6, "ramsi");
-            st.close();
+            addRow(con, 7, "rajesh");
+            viewAll(con);
             con.close();
         }catch(SQLException e){
             System.out.println("Connection Failed:"+e.getMessage());
