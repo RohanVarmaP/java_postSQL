@@ -1,6 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -10,9 +8,13 @@ public class App {
         try{
             Class.forName("org.postgresql.Driver");
             Connection con=DriverManager.getConnection(url,uName,pWord);
-            if(con!=null){
-                System.err.println("Connected");
+            Statement st= con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM public.\"studentsList\" ORDER BY roll_no ASC ;");
+            while(rs.next()){
+                System.err.println("Roll.no: "+rs.getInt(1)+", Name: "+rs.getString(2)+".");
             }
+            st.close();
+            con.close();
         }catch(SQLException e){
             System.out.println("Connection Failed:"+e.getMessage());
         }catch(ClassNotFoundException e){
